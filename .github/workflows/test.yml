@@ -34,6 +34,9 @@ jobs:
           load: true
           tags: ventoy-docker:test
 
+      - name: Show Installed Ventoy Version
+        run: docker run --rm ventoy-docker:test cat VERSION
+
       - name: Run Smoke Test
         run: |
           docker run --rm ventoy-docker:test ./Ventoy2Disk.sh --help

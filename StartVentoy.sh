@@ -10,10 +10,11 @@ usage() {
 🚀 StartVentoy.sh - Start Docker container with ventoy. 
 
 Usage:
-  $0 [-p <port>]
+  $0 [-p <port>] [-u]
 
 Options:
   -p PORT      TCP port for ventoy web (default: 24680) [OPTIONAL]
+  -u           Rebuild the image with the latest Ventoy release [OPTIONAL]
 
 Example:
   ./$0 -p 8080
@@ -58,26 +59,18 @@ if ! command -v docker &>/dev/null; then
     exit 1
 fi
 
-# Build the Docker image if it is not already built
-if ! docker image inspect ventoy-docker:1.1.12 &>/dev/null; then
-    echo "Docker image 'ventoy-docker' not found. Building the image..."
-    docker build -t ventoy-docker:1.1.12 .
-fi
-
-# Check if the build was successful
-if [[ $? -ne 0 ]]; then
-    echo "Error: Docker image build failed."
-    exit 1
-fi
-
 # Defaults
 PORT="24680"
+UPDATE="false"
 
 # Parse options
-while getopts ":p:" opt; do
+while getopts ":p:u" opt; do
     case "${opt}" in
     p)
         PORT="${OPTARG}"
+        ;;
+    u)
+        UPDATE="true"
         ;;
     *)
         usage
@@ -85,16 +78,26 @@ while getopts ":p:" opt; do
     esac
 done
 
+# Build the Docker image if it is not already built, or if an update was requested
+if [[ "$UPDATE" == "true" ]] || ! docker image inspect ventoy-docker:latest &>/dev/null; then
+    echo "Building the 'ventoy-docker' image with the latest Ventoy release..."
+    if ! docker build --pull -t ventoy-docker:latest .; then
+        echo "Error: Docker image build failed."
+        exit 1
+    fi
+fi
+
 # Run the Docker container
 echo "Running the Docker container..."
 docker run -it --rm \
     --name ventoy-docker \
     --privileged \
     -p "${PORT}":24680 \
-    ventoy-docker:1.1.12 \
+    ventoy-docker:latest \
     bash \
     -c "
 echo ''
+echo \"Ventoy version: \$(cat VERSION)\"
 echo '=============================================================='
 echo '🔗  To connect to NBD from your host, run the following:'
 echo ''

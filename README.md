@@ -163,6 +163,18 @@ VentoyWeb is exposed on host port `24680` by default. To use a custom host port:
 ./StartVentoy.sh -p 8080
 ```
 
+The image installs the latest Ventoy release available when it is built. To rebuild it with the newest release, run:
+
+```bash
+./StartVentoy.sh -u
+```
+
+To build an image with a specific Ventoy version instead, pass a build argument:
+
+```bash
+docker build --build-arg VENTOY_VERSION=1.1.12 -t ventoy-docker:latest .
+```
+
 ### 4. Connect the Container to NBD
 
 Inside the Docker container, mount the exported USB device:
