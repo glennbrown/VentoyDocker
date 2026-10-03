@@ -1,6 +1,9 @@
 # macOS
 .DS_Store
 
+# ventoy.sh runtime state
+.run/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

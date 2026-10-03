@@ -35,11 +35,11 @@ jobs:
           tags: ventoy-docker:test
 
       - name: Show Installed Ventoy Version
-        run: docker run --rm ventoy-docker:test cat VERSION
+        run: docker run --rm --entrypoint cat ventoy-docker:test VERSION
 
       - name: Run Smoke Test
         run: |
-          docker run --rm ventoy-docker:test ./Ventoy2Disk.sh --help
+          docker run --rm --entrypoint ./Ventoy2Disk.sh ventoy-docker:test --help
 
   # Job 2: Verify the build compiles correctly for Apple Silicon (macOS)
   check-macos:

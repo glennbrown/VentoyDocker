@@ -45,6 +45,7 @@ WORKDIR /root/ventoy
 
 COPY ./scripts/ /root/ventoy/scripts/
 
-RUN chmod +x /root/ventoy/scripts/cleanup.sh /root/ventoy/scripts/mount.sh
+RUN chmod +x /root/ventoy/scripts/*.sh
 
-CMD ["bash"]
+# Connect to the host's NBD export and start VentoyWeb
+ENTRYPOINT ["/root/ventoy/scripts/entrypoint.sh"]
